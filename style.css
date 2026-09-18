@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #d2dde0;
+    margin: 0;
+    padding: 40px;
+}
+
+main {
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+}
+
+.tweet {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 20px 0;
+    text-align: left;
+    font-size: 20px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+button {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #ddd;
+}
+
+#export {
+    margin-top: 30px;
+}
+
+#tutorialButton {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.overlay {
+    display: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+.tutorial {
+    position: relative;
+
+    background: white;
+    width: 600px;
+    max-width: 90%;
+
+    max-height: 85vh;
+    overflow-y: auto;
+
+    padding: 30px;
+    border-radius: 12px;
+
+    box-sizing: border-box;
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+
+    background: none;
+    border: none;
+
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.emotion-explanation p {
+    margin: 12px 0;
+}
+
+#startLabeling {
+    margin-top: 10px;
+}

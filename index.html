@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Labeler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="userSetup">
+        <h2>Enter your name here</h2>
+        <p> We will use this to identify your labels for this task</p>
+
+        <input
+            type="text"
+            id="labelerId"
+            placeholder="Enter your name"
+        >
+        <br>
+        <br>
+        <button id="startButton">Start Labeling</button>
+    </div>
+
+    <div id="labelingInterface" style="display: none;">
+        <main>
+            <h1>Emotion Labeler</h1>
+            <div id="progress"></div>
+
+            <div class="tweet" id="tweet">
+                Loading...
+            </div>
+
+            <div class="buttons">
+                <button data-emotion="anger">Anger</button>
+                <button data-emotion="fear">Fear</button>
+                <button data-emotion="joy">Joy</button>
+                <button data-emotion="love">Love</button>
+                <button data-emotion="sadness">Sadness</button>
+                <button data-emotion="surprise">Surprise</button>
+            </div>
+
+            <button id="export">Export Labels</button>
+        </main>
+
+        <button id="tutorialButton">How to Label</button>
+
+        <div id="tutorialOverlay" class="overlay">
+            <div class="tutorial">
+                <button id="closeTutorial" class="closeButton">×</button>
+
+                <h2>How to Label Tweets</h2>
+
+                <p>
+                    Read the tweet and select the emotion that best describes
+                    the overall emotion expressed in the tweet.
+                </p>
+
+                <h3>Emotion Labels</h3>
+
+                <div class="emotion-explanation">
+                    <p><strong>Anger</strong> — The tweet expresses anger, frustration, or irritation.</p>
+                    
+                    <p><strong>Fear</strong> — The tweet expresses fear, worry, anxiety, or nervousness.</p>
+                    
+                    <p><strong>Joy</strong> — The tweet expresses happiness, excitement, amusement, or pleasure.</p>
+                    
+                    <p><strong>Love</strong> — The tweet expresses affection, caring, or romantic/familial love.</p>
+                    
+                    <p><strong>Sadness</strong> — The tweet expresses sadness, grief, disappointment, or loneliness.</p>
+                    
+                    <p><strong>Surprise</strong> — The tweet expresses surprise, shock, or unexpectedness.</p>
+                </div>
+
+                <h3>Tips</h3>
+
+                <ul>
+                    <li>Choose the emotion that is most strongly expressed.</li>
+                    <li>Focus on the emotion expressed by the text, not your own reaction.</li>
+                    <li>Try to be consistent when labeling similar tweets.</li>
+                </ul>
+
+                <button id="startLabeling">Start Labeling</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
