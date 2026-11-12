@@ -7,7 +7,7 @@ let labels = JSON.parse(localStorage.getItem("aiFallacyLabels") || "[]");
 let labelerId = "";
 let aiPrediction = null;
 
-const API_BASE = "https://your-app-name.onrender.com";
+const API_BASE = "https://emotion-labeling-ofk6.onrender.com";
 const supabaseUrl = "https://wpvypzxbkdflozuhwreo.supabase.co";
 const supabaseAnonKey = "sb_publishable_TcwieLKitD8Zbi8tDB8GEA_64yKNW_u";
 const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
