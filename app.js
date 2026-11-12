@@ -154,7 +154,10 @@ document.getElementById("startButton").addEventListener("click", () => {
     }
 
     labelerId = input;
-    beginLabeling();
+    document.getElementById("userSetup").style.display = "none";
+    document.getElementById("labelingInterface").style.display = "block";
+    tutorialOverlay.style.display = "flex";
+    localStorage.setItem("fallacyTutorialSeen", "true");
 });
 
 showStatement();

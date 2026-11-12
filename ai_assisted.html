@@ -10,6 +10,7 @@
 <body>
     <div id="userSetup">
         <h2>Enter your uniqname</h2>
+        <p>By participating in this task, you are agreeing to have your answers recorded for data collection.</p>
         <p>This is the AI-assisted version. You may request a model prediction before you choose the label.</p>
 
         <input
@@ -58,6 +59,50 @@
 
             <button id="export">Export Labels</button>
         </main>
+
+        <button id="tutorialButton">How to Label</button>
+
+        <div id="tutorialOverlay" class="overlay">
+            <div class="tutorial">
+                <button id="closeTutorial" class="closeButton">×</button>
+
+                <h2>How to Label Fallacies</h2>
+
+                <p>
+                    Read each argument carefully and choose the fallacy that best matches the reasoning error being used.
+                    This is the AI-assisted task: you may use the model prediction to help you decide, but you should still select the best fallacy label.
+                </p>
+
+                <h3>Fallacy Types</h3>
+
+                <div class="emotion-explanation">
+                    <p><strong>Ad Hominem</strong> — Attacks the person instead of the argument.</p>
+                    <p><strong>Ad Populum</strong> — Claims something is true because many people believe it.</p>
+                    <p><strong>Appeal to Authority</strong> — Relies on an authority figure instead of evidence.</p>
+                    <p><strong>Appeal to Ignorance</strong> — Claims a statement is true because it has not been disproven.</p>
+                    <p><strong>Cherry Picking</strong> — Selects only evidence that supports a claim while ignoring contrary evidence.</p>
+                    <p><strong>Circular Reasoning</strong> — Uses the conclusion as a premise.</p>
+                    <p><strong>Equivocation</strong> — Uses a word or phrase with multiple meanings to mislead.</p>
+                    <p><strong>False Causality</strong> — Assumes one event caused another without proof.</p>
+                    <p><strong>False Dilemma</strong> — Presents only two options when more exist.</p>
+                    <p><strong>Hasty Generalization</strong> — Draws a broad conclusion from too little evidence.</p>
+                    <p><strong>Loaded Question</strong> — Phrasing a question that presumes an unproven claim.</p>
+                    <p><strong>Red Herring</strong> — Diverts attention away from the real issue.</p>
+                    <p><strong>Slippery Slope</strong> — Claims a minor action will inevitably lead to extreme outcomes.</p>
+                    <p><strong>The Bandwagon</strong> — Suggests a claim is true because it is popular.</p>
+                </div>
+
+                <h3>Tips</h3>
+
+                <ul>
+                    <li>Choose the single best match when more than one fallacy seems possible.</li>
+                    <li>Focus on the reasoning, not whether the claim is true in reality.</li>
+                    <li>Use the model prediction as a suggestion, not as a substitute for your own judgment.</li>
+                </ul>
+
+                <button id="startLabeling">Start Labeling</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

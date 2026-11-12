@@ -142,9 +142,36 @@ document.getElementById("startButton").addEventListener("click", () => {
     labelerId = input;
     document.getElementById("userSetup").style.display = "none";
     document.getElementById("labelingInterface").style.display = "block";
+    const tutorialOverlay = document.getElementById("tutorialOverlay");
+    if (tutorialOverlay) {
+        tutorialOverlay.style.display = "flex";
+    }
 });
 
 document.getElementById("requestPrediction").addEventListener("click", requestPrediction);
+
+const tutorialOverlay = document.getElementById("tutorialOverlay");
+const tutorialButton = document.getElementById("tutorialButton");
+const closeTutorial = document.getElementById("closeTutorial");
+const startLabeling = document.getElementById("startLabeling");
+
+if (tutorialButton) {
+    tutorialButton.addEventListener("click", () => {
+        tutorialOverlay.style.display = "flex";
+    });
+}
+
+if (closeTutorial) {
+    closeTutorial.addEventListener("click", () => {
+        tutorialOverlay.style.display = "none";
+    });
+}
+
+if (startLabeling) {
+    startLabeling.addEventListener("click", () => {
+        tutorialOverlay.style.display = "none";
+    });
+}
 
 document.querySelectorAll("[data-fallacy]").forEach(button => {
     button.addEventListener("click", () => saveLabel(button.dataset.fallacy));
