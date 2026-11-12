@@ -57,7 +57,7 @@ async function requestPrediction() {
 
     const text = statements[currentNum];
     const predictionField = document.getElementById("prediction");
-    predictionField.textContent = "Generating model prediction...";
+    predictionField.textContent = "Generating model prediction (this may take a minute)...";
 
     try {
         const response = await fetch(`${API_BASE}/api/predict`, {
