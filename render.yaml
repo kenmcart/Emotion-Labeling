@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fallacy-ai-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn ai_server:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"

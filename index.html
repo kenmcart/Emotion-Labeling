@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emotion Labeler</title>
+    <title>Fallacy Labeler</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="userSetup">
-        <h2>Enter your name here</h2>
-        <p> We will use this to identify your labels for this task</p>
+        <h2>Enter your name</h2>
+        <p>This is a non-AI-assisted fallacy labeling task. Please classify each argument without using AI or model suggestions.</p>
 
         <input
             type="text"
@@ -20,24 +20,35 @@
         <br>
         <br>
         <button id="startButton">Start Labeling</button>
+        <br>
+        <br>
+        <a href="ai_assisted.html">AI-assisted version</a>
     </div>
 
     <div id="labelingInterface" style="display: none;">
         <main>
-            <h1>Emotion Labeler</h1>
+            <h1>Fallacy Labeler</h1>
             <div id="progress"></div>
 
-            <div class="tweet" id="tweet">
+            <div class="statement" id="statement">
                 Loading...
             </div>
 
             <div class="buttons">
-                <button data-emotion="anger">Anger</button>
-                <button data-emotion="fear">Fear</button>
-                <button data-emotion="joy">Joy</button>
-                <button data-emotion="love">Love</button>
-                <button data-emotion="sadness">Sadness</button>
-                <button data-emotion="surprise">Surprise</button>
+                <button data-fallacy="ad_hominem">Ad Hominem</button>
+                <button data-fallacy="ad_populum">Ad Populum</button>
+                <button data-fallacy="appeal_to_authority">Appeal to Authority</button>
+                <button data-fallacy="appeal_to_ignorance">Appeal to Ignorance</button>
+                <button data-fallacy="cherry_picking">Cherry Picking</button>
+                <button data-fallacy="circular_reasoning">Circular Reasoning</button>
+                <button data-fallacy="equivocation">Equivocation</button>
+                <button data-fallacy="false_causality">False Causality</button>
+                <button data-fallacy="false_dilemma">False Dilemma</button>
+                <button data-fallacy="hasty_generalization">Hasty Generalization</button>
+                <button data-fallacy="loaded_question">Loaded Question</button>
+                <button data-fallacy="red_herring">Red Herring</button>
+                <button data-fallacy="slippery_slope">Slippery Slope</button>
+                <button data-fallacy="the_bandwagon">The Bandwagon</button>
             </div>
 
             <button id="export">Export Labels</button>
@@ -49,41 +60,45 @@
             <div class="tutorial">
                 <button id="closeTutorial" class="closeButton">×</button>
 
-                <h2>How to Label Tweets</h2>
+                <h2>How to Label Fallacies</h2>
 
                 <p>
-                    Read the tweet and select the emotion that best describes
-                    the overall emotion expressed in the tweet.
+                    Read each argument carefully and choose the fallacy that best matches the reasoning error being used.
+                    This is a manual, non-AI-assisted task: do not use AI tools when making your selection.
                 </p>
 
-                <h3>Emotion Labels</h3>
+                <h3>Fallacy Types</h3>
 
                 <div class="emotion-explanation">
-                    <p><strong>Anger</strong> — The tweet expresses anger, frustration, or irritation.</p>
-                    
-                    <p><strong>Fear</strong> — The tweet expresses fear, worry, anxiety, or nervousness.</p>
-                    
-                    <p><strong>Joy</strong> — The tweet expresses happiness, excitement, amusement, or pleasure.</p>
-                    
-                    <p><strong>Love</strong> — The tweet expresses affection, caring, or romantic/familial love.</p>
-                    
-                    <p><strong>Sadness</strong> — The tweet expresses sadness, grief, disappointment, or loneliness.</p>
-                    
-                    <p><strong>Surprise</strong> — The tweet expresses surprise, shock, or unexpectedness.</p>
+                    <p><strong>Ad Hominem</strong> — Attacks the person instead of the argument.</p>
+                    <p><strong>Ad Populum</strong> — Claims something is true because many people believe it.</p>
+                    <p><strong>Appeal to Authority</strong> — Relies on an authority figure instead of evidence.</p>
+                    <p><strong>Appeal to Ignorance</strong> — Claims a statement is true because it has not been disproven.</p>
+                    <p><strong>Cherry Picking</strong> — Selects only evidence that supports a claim while ignoring contrary evidence.</p>
+                    <p><strong>Circular Reasoning</strong> — Uses the conclusion as a premise.</p>
+                    <p><strong>Equivocation</strong> — Uses a word or phrase with multiple meanings to mislead.</p>
+                    <p><strong>False Causality</strong> — Assumes one event caused another without proof.</p>
+                    <p><strong>False Dilemma</strong> — Presents only two options when more exist.</p>
+                    <p><strong>Hasty Generalization</strong> — Draws a broad conclusion from too little evidence.</p>
+                    <p><strong>Loaded Question</strong> — Phrasing a question that presumes an unproven claim.</p>
+                    <p><strong>Red Herring</strong> — Diverts attention away from the real issue.</p>
+                    <p><strong>Slippery Slope</strong> — Claims a minor action will inevitably lead to extreme outcomes.</p>
+                    <p><strong>The Bandwagon</strong> — Suggests a claim is true because it is popular.</p>
                 </div>
 
                 <h3>Tips</h3>
 
                 <ul>
-                    <li>Choose the emotion that is most strongly expressed.</li>
-                    <li>Focus on the emotion expressed by the text, not your own reaction.</li>
-                    <li>Try to be consistent when labeling similar tweets.</li>
+                    <li>Choose the single best match when more than one fallacy seems possible.</li>
+                    <li>Focus on the reasoning, not whether the claim is true in reality.</li>
+                    <li>Be consistent across similar arguments.</li>
                 </ul>
 
                 <button id="startLabeling">Start Labeling</button>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Assisted Fallacy Labeler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="userSetup">
+        <h2>Enter your name</h2>
+        <p>This is the AI-assisted version. You may request a model prediction before you choose the label.</p>
+
+        <input
+            type="text"
+            id="labelerId"
+            placeholder="Enter your name"
+        >
+        <br>
+        <br>
+        <button id="startButton">Start AI-Assisted Labeling</button>
+        <br>
+        <br>
+        <a href="index.html">Manual labeling version</a>
+    </div>
+
+    <div id="labelingInterface" style="display: none;">
+        <main>
+            <h1>AI-Assisted Fallacy Labeler</h1>
+            <div id="progress"></div>
+
+            <div class="statement" id="statement">
+                Loading...
+            </div>
+
+            <div id="predictionBox" class="prediction-box">
+                <button id="requestPrediction">Get AI Prediction</button>
+                <div id="prediction" class="prediction-text">No prediction yet.</div>
+            </div>
+
+            <div class="buttons">
+                <button data-fallacy="ad_hominem">Ad Hominem</button>
+                <button data-fallacy="ad_populum">Ad Populum</button>
+                <button data-fallacy="appeal_to_authority">Appeal to Authority</button>
+                <button data-fallacy="appeal_to_ignorance">Appeal to Ignorance</button>
+                <button data-fallacy="cherry_picking">Cherry Picking</button>
+                <button data-fallacy="circular_reasoning">Circular Reasoning</button>
+                <button data-fallacy="equivocation">Equivocation</button>
+                <button data-fallacy="false_causality">False Causality</button>
+                <button data-fallacy="false_dilemma">False Dilemma</button>
+                <button data-fallacy="hasty_generalization">Hasty Generalization</button>
+                <button data-fallacy="loaded_question">Loaded Question</button>
+                <button data-fallacy="red_herring">Red Herring</button>
+                <button data-fallacy="slippery_slope">Slippery Slope</button>
+                <button data-fallacy="the_bandwagon">The Bandwagon</button>
+            </div>
+
+            <button id="export">Export Labels</button>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="ai_app.js"></script>
+</body>
+</html>
