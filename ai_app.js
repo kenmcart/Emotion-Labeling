@@ -6,6 +6,8 @@ let usedStatements = [];
 let labels = JSON.parse(localStorage.getItem("aiFallacyLabels") || "[]");
 let labelerId = "";
 let aiPrediction = null;
+let surveyPrompted = false;
+const SURVEY_URL = "https://forms.gle/RUZeN1aMqXJisXoa8";
 
 const API_BASE = "https://emotion-labeling-ofk6.onrender.com";
 const supabaseUrl = "https://wpvypzxbkdflozuhwreo.supabase.co";
@@ -34,6 +36,7 @@ function showStatement() {
         document.getElementById("statement").textContent = "You finished all the statements.";
         document.getElementById("progress").textContent = `${maxStatements} / ${maxStatements}`;
         document.getElementById("prediction").textContent = "No prediction yet.";
+        promptSurvey();
         return;
     }
 
@@ -114,6 +117,19 @@ async function saveLabel(fallacy) {
 
     currentStatement++;
     showStatement();
+}
+
+function promptSurvey() {
+    if (surveyPrompted) return;
+    surveyPrompted = true;
+
+    const shouldOpen = window.confirm(
+        "You have completed the labeling task. Would you like to complete the follow-up form now?"
+    );
+
+    if (shouldOpen) {
+        window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
+    }
 }
 
 document.getElementById("startButton").addEventListener("click", () => {
