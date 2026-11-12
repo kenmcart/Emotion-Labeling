@@ -119,7 +119,7 @@ async function saveLabel(fallacy) {
 document.getElementById("startButton").addEventListener("click", () => {
     const input = document.getElementById("labelerId").value.trim();
     if (input === "") {
-        alert("Please enter a labeler name.");
+        alert("Please enter a uniqname.");
         return;
     }
 
