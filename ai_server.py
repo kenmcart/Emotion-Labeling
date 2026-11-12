@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from pathlib import Path
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -14,6 +15,19 @@ ALLOWED_ORIGINS = {
     "http://127.0.0.1:3000",
 }
 
+MODEL_NAME = "kenmcart/classifier"
+model = None
+tokenizer = None
+
+
+def load_model_and_tokenizer():
+    global model, tokenizer
+    if model is None or tokenizer is None:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
+        model.eval()
+    return model, tokenizer
+
 
 @app.after_request
 def add_cors_headers(response):
@@ -23,24 +37,6 @@ def add_cors_headers(response):
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
-
-
-classifier = pipeline(
-    "text-classification",
-    model="kenmcart/classifier",
-    tokenizer="kenmcart/classifier",
-    device=-1,
-)
-
-
-@app.route("/")
-def index():
-    return send_from_directory(BASE_DIR, "index.html")
-
-
-@app.route("/ai_assisted.html")
-def ai_assisted_page():
-    return send_from_directory(BASE_DIR, "ai_assisted.html")
 
 
 @app.route("/api/predict", methods=["POST", "OPTIONS"])
@@ -54,11 +50,39 @@ def predict():
     if not text:
         return jsonify({"error": "text is required"}), 400
 
-    result = classifier(text, truncation=True, max_length=256)[0]
-    return jsonify({
-        "label": result["label"],
-        "score": float(result["score"]),
-    })
+    try:
+        model_obj, tokenizer_obj = load_model_and_tokenizer()
+        inputs = tokenizer_obj(text, truncation=True, max_length=256, return_tensors="pt")
+        inputs.pop("token_type_ids", None)
+
+        with torch.no_grad():
+            logits = model_obj(**inputs).logits
+
+        probs = torch.softmax(logits, dim=-1)
+        pred_idx = int(torch.argmax(probs, dim=-1))
+        score = float(probs[0][pred_idx].item())
+        label = model_obj.config.id2label.get(pred_idx, str(pred_idx))
+
+        return jsonify({
+            "label": label,
+            "score": score,
+        })
+    except Exception as exc:
+        app.logger.exception("Prediction failed")
+        return jsonify({
+            "error": "model prediction failed",
+            "detail": str(exc),
+        }), 500
+
+
+@app.route("/")
+def index():
+    return send_from_directory(BASE_DIR, "index.html")
+
+
+@app.route("/ai_assisted.html")
+def ai_assisted_page():
+    return send_from_directory(BASE_DIR, "ai_assisted.html")
 
 
 if __name__ == "__main__":
