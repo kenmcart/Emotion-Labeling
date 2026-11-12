@@ -1,6 +1,6 @@
 let statements = [];
 let currentStatement = 0;
-let maxStatements = 20;
+let maxStatements = 12;
 let currentNum = 0;
 let usedStatements = [];
 let labels = JSON.parse(localStorage.getItem("aiFallacyLabels") || "[]");
@@ -96,11 +96,16 @@ async function saveToSupabase({ mode, labeler, statement, fallacy }) {
     }
 }
 
+const attentionCheckIndex = Math.floor(Math.random() * maxStatements);
+
 async function saveLabel(fallacy) {
+    const isAttentionCheck = currentStatement === attentionCheckIndex;
     const response = {
         mode: "ai_assisted",
         labeler: labelerId,
-        statement: statements[currentNum],
+        statement: isAttentionCheck
+            ? "Attention check: Please select 'Cherry Picking' as the answer."
+            : statements[currentNum],
         fallacy,
         ai_prediction: aiPrediction
     };
