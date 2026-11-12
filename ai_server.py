@@ -3,14 +3,13 @@ from pathlib import Path
 from transformers import pipeline
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_DIR = Path("/Users/kennedy/Downloads/fallacy-final 3")
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
 
 classifier = pipeline(
     "text-classification",
-    model=str(MODEL_DIR),
-    tokenizer=str(MODEL_DIR),
+    model="kenmcart/classifier",
+    tokenizer="kenmcart/classifier",
     device=-1,
 )
 

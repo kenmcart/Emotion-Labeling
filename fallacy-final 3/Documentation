@@ -1,0 +1,5 @@
+NOTE: PYTHON MUST BE INSTALLED TO RUN predict.py AND evaluate.py
+
+- To run the model on a specific phrase, adjust "argument" in predict.py and then run predict.py using python
+- To evaluate the model on 200 random phrases from the test dataset, run evaluate.py using python
+    - This will provide evaluation output in the console (e.g. model accuracy), and will create fallacy_study_dataset.csv in evaluate.py's parent folder with the evaluation results per statement.
