@@ -126,6 +126,12 @@ const closeTutorial =
 const startLabeling =
     document.getElementById("startLabeling");
 
+function beginLabeling() {
+    document.getElementById("userSetup").style.display = "none";
+    document.getElementById("labelingInterface").style.display = "block";
+    tutorialOverlay.style.display = "none";
+    localStorage.setItem("fallacyTutorialSeen", "true");
+}
 
 tutorialButton.addEventListener("click", () => {
     tutorialOverlay.style.display = "flex";
@@ -136,7 +142,7 @@ closeTutorial.addEventListener("click", () => {
 });
 
 startLabeling.addEventListener("click", () => {
-    tutorialOverlay.style.display = "none";
+    beginLabeling();
 });
 
 document.getElementById("startButton").addEventListener("click", () => {
@@ -148,12 +154,7 @@ document.getElementById("startButton").addEventListener("click", () => {
     }
 
     labelerId = input;
-
-    document.getElementById("userSetup").style.display = "none";
-    document.getElementById("labelingInterface").style.display = "block";
-
-    tutorialOverlay.style.display = "flex";
-    localStorage.setItem("fallacyTutorialSeen", "true");
+    beginLabeling();
 });
 
 showStatement();
