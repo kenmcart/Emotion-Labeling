@@ -21,12 +21,20 @@ tokenizer = None
 
 
 def load_model_and_tokenizer():
+    """Load and cache the model once for fast prediction requests."""
     global model, tokenizer
     if model is None or tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
         model.eval()
     return model, tokenizer
+
+
+try:
+    load_model_and_tokenizer()
+    app.logger.info("AI model and tokenizer loaded at startup")
+except Exception:
+    app.logger.exception("AI model failed to load at startup")
 
 
 @app.after_request
