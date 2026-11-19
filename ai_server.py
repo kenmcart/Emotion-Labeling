@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from pathlib import Path
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+import os
+import requests
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -16,25 +16,8 @@ ALLOWED_ORIGINS = {
 }
 
 MODEL_NAME = "kenmcart/classifier"
-model = None
-tokenizer = None
-
-
-def load_model_and_tokenizer():
-    """Load and cache the model once for fast prediction requests."""
-    global model, tokenizer
-    if model is None or tokenizer is None:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
-        model.eval()
-    return model, tokenizer
-
-
-try:
-    load_model_and_tokenizer()
-    app.logger.info("AI model and tokenizer loaded at startup")
-except Exception:
-    app.logger.exception("AI model failed to load at startup")
+HF_INFERENCE_URL = f"https://router.huggingface.co/hf-inference/models/{MODEL_NAME}"
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 
 @app.after_request
@@ -59,17 +42,31 @@ def predict():
         return jsonify({"error": "text is required"}), 400
 
     try:
-        model_obj, tokenizer_obj = load_model_and_tokenizer()
-        inputs = tokenizer_obj(text, truncation=True, max_length=256, return_tensors="pt")
-        inputs.pop("token_type_ids", None)
+        headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
+        response = requests.post(
+            HF_INFERENCE_URL,
+            headers=headers,
+            json={"inputs": text},
+            timeout=30,
+        )
+        response.raise_for_status()
 
-        with torch.no_grad():
-            logits = model_obj(**inputs).logits
+        result = response.json()
 
-        probs = torch.softmax(logits, dim=-1)
-        pred_idx = int(torch.argmax(probs, dim=-1))
-        score = float(probs[0][pred_idx].item())
-        label = model_obj.config.id2label.get(pred_idx, str(pred_idx))
+        if isinstance(result, list):
+            if result and isinstance(result[0], list):
+                result = result[0]
+            if result:
+                prediction = result[0]
+            else:
+                raise ValueError("Hugging Face returned an empty prediction")
+        elif isinstance(result, dict):
+            prediction = result
+        else:
+            raise ValueError("Unexpected Hugging Face response format")
+
+        label = prediction.get("label", "unknown")
+        score = float(prediction.get("score", 0.0))
 
         return jsonify({
             "label": label,
