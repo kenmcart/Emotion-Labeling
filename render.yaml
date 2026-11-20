@@ -5,4 +5,4 @@ services:
     pythonVersion: "3.12"
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn ai_server:app"
+    startCommand: "gunicorn ai_server:app --workers 1 --threads 1 --timeout 300"

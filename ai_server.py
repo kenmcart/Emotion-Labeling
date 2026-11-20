@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify, send_from_directory
 from pathlib import Path
-import os
-import requests
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
 
 BASE_DIR = Path(__file__).resolve().parent
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
+
+torch.set_num_threads(1)
 
 ALLOWED_ORIGINS = {
     "https://kenmcart.github.io",
@@ -16,8 +18,29 @@ ALLOWED_ORIGINS = {
 }
 
 MODEL_NAME = "kenmcart/classifier"
-HF_INFERENCE_URL = f"https://router.huggingface.co/hf-inference/models/{MODEL_NAME}"
-HF_TOKEN = os.getenv("HF_TOKEN")
+model = None
+tokenizer = None
+
+
+def load_model_and_tokenizer():
+    """Load and cache the model once on the first prediction request."""
+    global model, tokenizer
+    if model is None or tokenizer is None:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        model = AutoModelForSequenceClassification.from_pretrained(
+            MODEL_NAME,
+            low_cpu_mem_usage=False,
+        )
+        model.eval()
+
+        # Quantize linear layers after loading to reduce runtime memory.
+        model = torch.quantization.quantize_dynamic(
+            model,
+            {torch.nn.Linear},
+            dtype=torch.qint8,
+        )
+        model.eval()
+    return model, tokenizer
 
 
 @app.after_request
@@ -42,52 +65,26 @@ def predict():
         return jsonify({"error": "text is required"}), 400
 
     try:
-        if not HF_TOKEN:
-            return jsonify({
-                "error": "HF_TOKEN is not configured on Render",
-            }), 500
-
-        headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-        response = requests.post(
-            HF_INFERENCE_URL,
-            headers=headers,
-            json={"inputs": text},
-            timeout=60,
+        model_obj, tokenizer_obj = load_model_and_tokenizer()
+        inputs = tokenizer_obj(
+            text,
+            truncation=True,
+            max_length=256,
+            return_tensors="pt",
         )
+        inputs.pop("token_type_ids", None)
 
-        try:
-            provider_result = response.json()
-        except ValueError:
-            provider_result = response.text
+        with torch.no_grad():
+            logits = model_obj(**inputs).logits
 
-        if not response.ok:
-            app.logger.error("Hugging Face error %s: %s", response.status_code, provider_result)
-            return jsonify({
-                "error": "Hugging Face Inference failed",
-                "detail": str(provider_result),
-            }), response.status_code
+        probabilities = torch.softmax(logits, dim=-1)
+        predicted_index = int(torch.argmax(probabilities, dim=-1).item())
+        score = float(probabilities[0][predicted_index].item())
 
-        result = provider_result
+        id2label = model_obj.config.id2label or {}
+        label = id2label.get(predicted_index, id2label.get(str(predicted_index), str(predicted_index)))
 
-        if isinstance(result, list):
-            if result and isinstance(result[0], list):
-                result = result[0]
-            if result:
-                prediction = result[0]
-            else:
-                raise ValueError("Hugging Face returned an empty prediction")
-        elif isinstance(result, dict):
-            prediction = result
-        else:
-            raise ValueError("Unexpected Hugging Face response format")
-
-        label = prediction.get("label", "unknown")
-        score = float(prediction.get("score", 0.0))
-
-        return jsonify({
-            "label": label,
-            "score": score,
-        })
+        return jsonify({"label": label, "score": score})
     except Exception as exc:
         app.logger.exception("Prediction failed")
         return jsonify({
