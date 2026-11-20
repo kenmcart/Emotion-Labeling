@@ -42,16 +42,32 @@ def predict():
         return jsonify({"error": "text is required"}), 400
 
     try:
-        headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
+        if not HF_TOKEN:
+            return jsonify({
+                "error": "HF_TOKEN is not configured on Render",
+            }), 500
+
+        headers = {"Authorization": f"Bearer {HF_TOKEN}"}
         response = requests.post(
             HF_INFERENCE_URL,
             headers=headers,
             json={"inputs": text},
-            timeout=30,
+            timeout=60,
         )
-        response.raise_for_status()
 
-        result = response.json()
+        try:
+            provider_result = response.json()
+        except ValueError:
+            provider_result = response.text
+
+        if not response.ok:
+            app.logger.error("Hugging Face error %s: %s", response.status_code, provider_result)
+            return jsonify({
+                "error": "Hugging Face Inference failed",
+                "detail": str(provider_result),
+            }), response.status_code
+
+        result = provider_result
 
         if isinstance(result, list):
             if result and isinstance(result[0], list):

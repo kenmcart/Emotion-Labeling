@@ -67,7 +67,12 @@ async function requestPrediction() {
         });
 
         if (!response.ok) {
-            throw new Error("Prediction request failed");
+            let message = "Prediction request failed";
+            try {
+                const errorResult = await response.json();
+                message = errorResult.detail || errorResult.error || message;
+            } catch (_) {}
+            throw new Error(message);
         }
 
         const result = await response.json();
@@ -75,7 +80,7 @@ async function requestPrediction() {
         predictionField.textContent = `AI prediction: ${result.label} (${(result.score * 100).toFixed(1)}% confidence)`;
     } catch (error) {
         console.error(error);
-        predictionField.textContent = "Prediction failed. Please make sure the Render backend is running.";
+        predictionField.textContent = `Prediction failed: ${error.message}`;
         aiPrediction = null;
     }
 }
