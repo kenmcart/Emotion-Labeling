@@ -45,11 +45,12 @@ def load_model_and_tokenizer():
 
 @app.after_request
 def add_cors_headers(response):
-    origin = request.headers.get("Origin")
-    if origin in ALLOWED_ORIGINS:
+    origin = request.headers.get("Origin", "")
+    if origin in ALLOWED_ORIGINS or origin.startswith("https://kenmcart.github.io"):
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Vary"] = "Origin"
     return response
 
 
@@ -91,6 +92,19 @@ def predict():
             "error": "model prediction failed",
             "detail": str(exc),
         }), 500
+
+
+@app.route("/api/warmup", methods=["GET", "OPTIONS"])
+def warmup():
+    if request.method == "OPTIONS":
+        return "", 204
+
+    try:
+        load_model_and_tokenizer()
+        return jsonify({"status": "ready"})
+    except Exception as exc:
+        app.logger.exception("Model warmup failed")
+        return jsonify({"status": "error", "detail": str(exc)}), 500
 
 
 @app.route("/")

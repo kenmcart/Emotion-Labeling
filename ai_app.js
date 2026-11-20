@@ -25,6 +25,9 @@ fetch("fallacy_dataset.json")
             "Unable to load the statement dataset.";
     });
 
+fetch(`${API_BASE}/api/warmup`, { method: "GET" })
+    .catch(() => {});
+
 function showStatement() {
     if (!statements.length) {
         document.getElementById("statement").textContent = "No statements available.";
