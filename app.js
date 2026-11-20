@@ -1,7 +1,7 @@
 let statements = [];
 
 let currentStatement = 0;
-let maxStatements = 20;
+let maxStatements = 12;
 
 let currentNum = 0;
 let usedStatements = [];
@@ -40,6 +40,10 @@ function showStatement() {
             "You finished all the statements!";
         document.getElementById("progress").textContent =
             `${maxStatements} / ${maxStatements}`;
+        document.getElementById("surveyButton").style.display = "inline-block";
+        document.querySelectorAll("[data-fallacy]").forEach(button => {
+            button.disabled = true;
+        });
         return;
     }
 
@@ -158,6 +162,10 @@ document.getElementById("startButton").addEventListener("click", () => {
     document.getElementById("labelingInterface").style.display = "block";
     tutorialOverlay.style.display = "flex";
     localStorage.setItem("fallacyTutorialSeen", "true");
+});
+
+document.getElementById("manualFollowUp").addEventListener("click", () => {
+    window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
 });
 
 showStatement();

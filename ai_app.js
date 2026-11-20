@@ -133,17 +133,19 @@ async function saveLabel(fallacy) {
 }
 
 function promptSurvey() {
-    if (surveyPrompted) return;
-    surveyPrompted = true;
-
-    const shouldOpen = window.confirm(
-        "You have completed the labeling task. Would you like to complete the follow-up form now?"
-    );
-
-    if (shouldOpen) {
-        window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
+    const surveyButton = document.getElementById("surveyButton");
+    if (surveyButton) {
+        surveyButton.style.display = "inline-block";
     }
+
+    document.querySelectorAll("[data-fallacy]").forEach(button => {
+        button.disabled = true;
+    });
 }
+
+document.getElementById("surveyButton").addEventListener("click", () => {
+    window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
+});
 
 document.getElementById("startButton").addEventListener("click", () => {
     const input = document.getElementById("labelerId").value.trim();
