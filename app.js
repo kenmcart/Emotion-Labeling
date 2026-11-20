@@ -11,6 +11,7 @@ let labels = JSON.parse(
 );
 
 let labelerId = "";
+const SURVEY_URL = "https://forms.gle/RUZeN1aMqXJisXoa8";
 
 const supabaseUrl = "https://wpvypzxbkdflozuhwreo.supabase.co";
 const supabaseAnonKey = "sb_publishable_TcwieLKitD8Zbi8tDB8GEA_64yKNW_u";
@@ -26,6 +27,8 @@ fetch("fallacy_dataset.json")
         document.getElementById("statement").textContent =
             "Unable to load the dataset. Please make sure fallacy_dataset.json is available.";
     });
+
+let attentionCheckIndex = Math.floor(Math.random() * maxStatements);
 
 function showStatement() {
     if (!statements.length) {
@@ -44,6 +47,14 @@ function showStatement() {
         document.querySelectorAll("[data-fallacy]").forEach(button => {
             button.disabled = true;
         });
+        return;
+    }
+
+    if (currentStatement === attentionCheckIndex) {
+        document.getElementById("statement").textContent =
+            "Attention check: Please select 'Cherry Picking' as the answer.";
+        document.getElementById("progress").textContent =
+            `${currentStatement + 1} / ${maxStatements}`;
         return;
     }
 
@@ -77,10 +88,15 @@ async function saveToSupabase({ mode, labeler, statement, fallacy }) {
 }
 
 async function saveLabel(fallacy) {
+    const isAttentionCheck = currentStatement === attentionCheckIndex;
+    const displayedStatement = isAttentionCheck
+        ? "Attention check: Please select 'Cherry Picking' as the answer."
+        : statements[currentNum];
+
     const response = {
         mode: "manual",
         labeler: labelerId,
-        statement: statements[currentNum],
+        statement: displayedStatement,
         fallacy
     };
 
@@ -164,8 +180,8 @@ document.getElementById("startButton").addEventListener("click", () => {
     localStorage.setItem("fallacyTutorialSeen", "true");
 });
 
-document.getElementById("manualFollowUp").addEventListener("click", () => {
-    window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
+document.getElementById("surveyButton").addEventListener("click", () => {
+    window.open(SURVEY_URL, "_blank");
 });
 
 showStatement();

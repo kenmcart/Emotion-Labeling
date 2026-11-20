@@ -49,6 +49,16 @@ function showStatement() {
     }
     usedStatements.push(currentNum);
 
+    if (currentStatement === attentionCheckIndex) {
+        document.getElementById("statement").textContent =
+            "Attention check: Please select 'Cherry Picking' as the answer.";
+        document.getElementById("progress").textContent =
+            `${currentStatement + 1} / ${maxStatements}`;
+        document.getElementById("prediction").textContent = "No prediction needed.";
+        aiPrediction = null;
+        return;
+    }
+
     document.getElementById("statement").textContent = statements[currentNum];
     document.getElementById("progress").textContent = `${currentStatement + 1} / ${maxStatements}`;
     document.getElementById("prediction").textContent = "No prediction yet.";
@@ -124,7 +134,7 @@ async function saveLabel(fallacy) {
     await saveToSupabase({
         mode: "ai_assisted",
         labeler: labelerId,
-        statement: statements[currentNum],
+        statement: response.statement,
         fallacy
     });
 
@@ -144,7 +154,7 @@ function promptSurvey() {
 }
 
 document.getElementById("surveyButton").addEventListener("click", () => {
-    window.open(SURVEY_URL, "_blank", "noopener,noreferrer");
+    window.open(SURVEY_URL, "_blank");
 });
 
 document.getElementById("startButton").addEventListener("click", () => {
